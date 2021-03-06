@@ -375,7 +375,7 @@ shinyUI(navbarPage(
       tags$h1("Dataviz"),
       tagList(
          "This interactive Shiny application has been conceived to automate basic data cleaning and visualization tasks.
-                        It requires an R-server to be work. For more information about the shiny framework you can visit",
+                        It requires an R-server to be working. For more information about the shiny framework you can visit",
          a("the shiny website.", href="https://shiny.rstudio.com/")
       ),
       
