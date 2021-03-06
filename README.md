@@ -12,7 +12,7 @@ As everything is included in a single file, you are only required to run the who
 
 ##### With the separate files
 
-Make sure you have the `shiny` package installed and loaded. Then run the following command : `runApp('dir')` and replace `dir` by the directory (relative or complete) path in which you have placed the three files ui.R, server.R and global.R.
+Make sure you have the `shiny` package installed and loaded. Then run the following command : `runApp('dir')` and replace `dir` by the directory relative or full path containing the three files ui.R, server.R and global.R.
 
 ##### With R Studio
 
