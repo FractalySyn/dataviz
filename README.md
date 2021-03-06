@@ -1,6 +1,6 @@
 # DataViz App
 
-This interactive Shiny application has been conceived to automate basic data cleaning and visualization tasks. It requires an R-server to be work. For more information about the shiny framework you can visit [the shiny website](https://shiny.rstudio.com/).
+This interactive Shiny application has been conceived to automate basic data cleaning and visualization tasks. It requires an R-server to be working. For more information about the shiny framework you can visit [the shiny website](https://shiny.rstudio.com/).
 
 ### Launch the app
 
@@ -8,23 +8,23 @@ To launch DataViz you can either use the app.R file that is at the root of the r
 
 ##### With the standalone file app.R
 
-As everything is included in a single file, you are only required to run the whole code in your R console or IDE.
+As everything is included in a single file, you are simply required to run the whole code in your R console or IDE.
 
 ##### With the separate files
 
-Make sure you have the `shiny` package installed and loaded. Then run the following command : `runApp('dir')` and replace `dir` by the directory relative or full path containing the three files ui.R, server.R and global.R.
+Make sure you have the `shiny` package installed and loaded. Then run the command `runApp('dir')` and replace `dir` by the relative or full path to the directory containing the three files ui.R, server.R and global.R.
 
 ##### With R Studio
 
-Once shiny is installed, R Studio automatically replace the `Run` button by a `Run App` one when your opened R code has shiny main components in it. This functionality exists wether you are using the standalone file or the separate files.
+Once shiny is installed, R Studio automatically replaces the `Run` button by the `Run App` one as soon as your opened R code has shiny main components in it. This functionality exists whether you are using the standalone file or the separate files.
 
 ### Use DataViz
 
-This app allows you to import your dataset (only csv at the moment), visualize it, generate plots and perform some cleaning tasks. We do not provide tutorials for simple features and more advanced ones are accompanied by helpers (you can access them by clicking on question marks).
+This app allows you to import your own dataset (only csv are supported at the moment), visualize it, generate plots and perform some cleaning tasks. We do not provide tutorials for simple features as they are intuitive while more advanced ones are provided with integrated helpers (you can access them by clicking on question marks inside the app).
 
 ### Project Roadmap
 
-You can find a raw version of this features' planning inside the app ('About the app' tab).
+You can find a raw version of this development planning inside the app ('About the app' tab).
 
 - [ ] **General features**
   - [x] About section and integrated helpers
