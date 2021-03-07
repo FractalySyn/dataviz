@@ -30,6 +30,8 @@ This app allows you to import your own dataset (only csv are supported at the mo
 
 You can find a raw version of this development planning inside the app ('About the app' tab).
 
+- [ ] **Web Deployment**
+
 - [ ] **General features**
   - [x] About section and integrated helpers
   - [ ] Aesthetic : theming, progression bars....
