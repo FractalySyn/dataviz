@@ -2,6 +2,10 @@
 
 This interactive Shiny application has been conceived to automate basic data cleaning and visualization tasks. It requires an R-server to be working. For more information about the shiny framework you can visit [the shiny website](https://shiny.rstudio.com/).
 
+![Explore Tab](im/explore.png)
+
+![Viz Tab](im/viz.png)
+
 ### Launch the app
 
 To launch DataViz you can either use the app.R file that is at the root of the repository or use the three different files located in the dataviz folder. For the latter, make sure that you place all files in the same folder. 
