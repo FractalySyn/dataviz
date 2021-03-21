@@ -1,0 +1,290 @@
+---
+title: "DataViz Shiny App"
+author: "Corentin Lobet"
+output:
+  ioslides_presentation: 
+    transition: faster
+    logo: C:/Users/Utilisateur/Google Drive/Data/Blogdown/website/assets/images/site/icon3.png
+    css: styles.css
+    template: quarterly-report.html
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+```
+
+## Shiny {.flexbox .vcenter}
+
+::: {.columns-2}
+![](im/html-css-js.jpg){width="380"} <br/>
+
+![](im/Shiny.png){width="500"} <br/> <br/> ![](im/r-logo.png){width="250"}
+:::
+
+## Structure
+
+### Standalone app.R
+
+``` {.r}
+ui <- fluidPage()
+
+server <- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+
+### Separate files
+
+-   global.R et fonctions
+-   ui.R
+-   server.R
+-   `runApp(directory, ...)`
+
+
+## UI
+
+- Choose the main UI layout (fluidPage, navbarPage, dashboardPage...)
+- Any UI layout can be nested into others
+
+``` {.r}
+ui <- navbarPage(
+   tabPanel(
+      fluidPage(
+          sidebarLayout(
+            sidebarPanel(),
+            mainPanel()
+          )
+      )
+   )
+)
+```
+
+
+## Inputs and Outputs {.smaller}
+
+- Created and designed in the UI component
+- Can be modified in the server component
+- Inputs are also modified by the user while outputs can react to inputs changes
+
+``` {.r}
+## Plot Selection (UI)
+selectInput(inputId = "plot_selection", label = "Choose a plotting method",
+           choices = c("None"))
+           
+## Update Plot selection (Server)
+observe({
+  updateSelectInput(session, "plot_selection", choices = plots())
+})
+           
+           
+## Plot Output (UI)
+plotlyOutput(outputId = "plot", height = 600)
+
+## Plot output (Server)
+output$plot = renderPlotly({
+  eval(parse(text = plot_function()))
+})
+```
+
+## Inputs
+
+- Inputs are independent -> they can't read other inputs
+- We get their value by calling their ID
+
+### Examples of inputs
+
+::: {.columns-2}
+```{r, echo = F}
+library(shiny)
+
+ui <- fluidPage(
+  selectInput(inputId = "a", label = "selectInput", 
+              choices = c('Choice 1', 'Choice 2', '...')),
+  numericInput('b', "numericInput", value = 10),
+  sliderInput("c", "sliderInput", value = 50, min = 10, max = 100)
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui, server)
+```
+
+```{r, echo = F}
+ui <- fluidPage(
+  br(),
+  actionButton('d', "actionButton"), br(), br(),
+  fileInput("e", "fileInput"), 
+  dateInput('f', "dateInput")
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui, server)
+```
+:::
+
+## Outputs {.smaller}
+
+- Outputs are defined as UI elements in UI then assigned an R object in the Server
+
+```{r, echo = F}
+library(ggplot2)
+```
+
+```{r, eval = F}
+ui <- fluidPage(
+  # Inputs
+  ### <b>
+  column(4,textInput('title', "Title", value = "Histogram"),
+         sliderInput("n", "# values", value = 100, min = 30, max = 400, ticks = F)),
+  ### </b>
+  # Output
+  ### <b>
+  column(8, plotOutput("hist", width = "100%", height = "400px"))
+  ### </b>
+)
+server <- function(input, output) {
+  # Generate data
+  ### <b>
+  data = reactive({
+    data.frame(x = rnorm(input$n, 0, 5))
+  })
+  ### </b>
+  # Generate histogram
+  ### <b>
+  output$hist = renderPlot({
+    ggplot(data(), aes(x)) +
+      geom_histogram(color = "black", fill = "white") +
+      ggtitle(input$title) 
+  })
+  ### </b>
+}
+shinyApp(ui, server)
+```
+
+
+## Outputs
+
+```{r, echo = F}
+ui <- fluidPage(
+  # Inputs
+  column(4,textInput('title', "Title", value = "Histogram"),
+         sliderInput("n", "# values", value = 100, min = 30, max = 400, ticks = F)),
+  
+  # Output
+  column(8, plotOutput("hist", width = "100%", height = "400px"))
+)
+
+server <- function(input, output) {
+  # Generate data
+  data = reactive({
+    data.frame(x = rnorm(input$n, 0, 5))
+  })
+  
+  # Generate histogram
+  output$hist = renderPlot({
+    ggplot(data(), aes(x)) +
+      geom_histogram(color = "black", fill = "white") +
+      ggtitle(input$title) 
+  })
+}
+
+shinyApp(ui, server)
+```
+
+
+## Insert HTML directly
+
+- HTML functions are called via the `tags` list which contains **html builder functions** (package *htmltools*)
+- Titles : `tags$h1()`; `tags$h2()` ...
+- Horizontal line : `tags$hr()`; Line break : `tags$br()`
+- Bullet list :
+
+``` {.html}
+tags$div(
+         tags$ul(
+            tags$li('Backend speed : Code optimization, DataTable instead of dplyr'),
+            tags$li('Theming'),
+            tags$li('Prevent crashing when the R-server produces an error'),
+            tags$li('Progression bars'),
+            tags$li("Fix the conditionalPanel issue if shiny doesn't")
+         )
+      )
+```
+
+## Reactivity
+
+- R code, excepting external functions, has to be defined in a **reactive context** 
+- In these reactive environments, every time an **input** or a **reactive object** is changed, the code is re-evaluated
+- Example of my way to read and store the data chosen by the user :
+
+```{.r}
+copy_data = reactive({
+      if (input$dataset == 'Upload your own CSV') {
+         if(is.null(input$datafile)) NULL
+         else input$datafile$datapath %>% read_csv
+      }
+      else eval(parse(text = input$dataset)) %>% as_tibble})
+   
+   data = reactiveVal()
+   observe({data(copy_data())})
+```
+
+## Tips that helped me
+
+- Design the UI before coding it
+- Program one element at a time
+- Start with simplified versions of your objectives
+- Use google, shiny gallery and github to enhance the code
+- Do and update a Roadmap
+
+## My troubles in this project
+
+- Couple R code and **shiny syntax**
+- Use **Reactivity**, I advise to have a deep understanding of this concept and its implementation before developing an app
+- **`conditionalPanel` issue**
+  - To evaluate inputs in the UI, it is required to use Javascript
+  - Sometimes conditional panels ignore the condition
+  - Common issue in the community and no global fixes exist
+  - Displacing the code lead to different results while it should not
+- **Web deployment**
+
+## My troubles in this project {.smaller}
+
+- Integrate shiny objects in code is not always straightforward
+  - Solution : `eval(parse(text = object))`
+
+```{.r}
+if(input$auto_title){
+  updateTextInput(session, "title", value = paste0(input$variables_plot, " Histogram"))
+  updateTextInput(session, "xlab", value = input$variables_plot)
+  updateTextInput(session, "ylab", value = "count")}
+  
+paste0("(data() %>% ggplot(aes(", input$variables_plot[1], ")) + 
+        geom_histogram(color = '", input$geom_color, "', fill = '", input$geom_color2, "',
+                       bins = ", input$bins, ", alpha = ", input$alpha, ") +",
+        input$geom_theme, "() + 
+        ggtitle('", input$title, "') + xlab('", input$xlab, "') + ylab('", input$ylab, "') +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        scale_x_continuous(trans = '", input$trans, "')) %>% 
+        ggplotly %>% 
+        config(toImageButtonOptions = list(format = '", input$format, "',
+               width = ", input$width, ", height = ", input$height, "))")
+```
+
+
+## Progress & Demo
+
+https://github.com/FractalySyn/dataviz
+
+
+
+
+
+
+
+
+
+
+
