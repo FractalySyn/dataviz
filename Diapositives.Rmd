@@ -249,6 +249,7 @@ copy_data = reactive({
   - Common issue in the community and no global fixes exist
   - Displacing the code lead to different results while it should not
 - **Web deployment**
+- **App crashes**
 
 ## My troubles in this project {.smaller}
 
